@@ -1,6 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-
+from csv import writer
 
 def setDriver():
 
@@ -25,18 +25,25 @@ def setTable(driver):
     )
     return table
 
+def writeToCSV(track):
+    with open('playlist.csv', 'a') as f_object:
+        writer_object = writer(f_object)
+        writer_object.writerow(track)
+        f_object.close()
+
 
 def getTracks(table):
     index = 2
 
     while 1:
         try:
-            track = table.find_element(By.XPATH, "./div[@aria-rowindex='" + str(index) + "']") #sa ii pun dupa elementu ala din atribut si ar trb sa mearga
+            track = table.find_element(By.XPATH, "./div[@aria-rowindex='" + str(index) + "']") 
         except: 
             print("\nAll songs have been scanned") 
             break
         driver.execute_script("arguments[0].scrollIntoView();", track)
 
+        track_info = []
         current_track = track.get_attribute("aria-rowindex")
         track_data = track.find_element(
             By.CSS_SELECTOR, 'div > div[aria-colindex="2"] > div '
@@ -48,18 +55,17 @@ def getTracks(table):
             By.CSS_SELECTOR, "span.standalone-ellipsis-one-line > div > a"
         )
 
-        output = current_track + " " + track_name + " by "
+        track_info.append(int(current_track) -1)
+        track_info.append(track_name)
+        output_artists =""
         for artist in track_artist:
-            output += artist.get_attribute("innerHTML") + ", "
-        output = output[:-2]
-        print(output)
+            output_artists += artist.get_attribute("innerHTML") + ", "
+        output_artists = output_artists[:-2]
+        track_info.append(output_artists)
+
+        writeToCSV(track_info)
 
         index = index + 1
-
-
-# file = open("test.html", "w")
-# file.write(tracks[1].get_attribute("outerHTML"))
-# file.close()
 
 if __name__ == "__main__":
 
