@@ -1,0 +1,12 @@
+Title: codeine got me trippin
+
+Authored by: Alperen
+
+Contains 326 songs
+
+Link to playlist: https://open.spotify.com/playlist/1ew1tOk2mcJAzr550LTH03?si=4466a19dade24b36&nd=1&dlsi=cd93614b9fae43ed
+
+ You can find a spreadsheet of the scraped songs at "song name".csv
+
+
+App designed by Stresna George

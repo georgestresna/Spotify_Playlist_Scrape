@@ -33,7 +33,7 @@ def writeToCSV(track):
     name = getPlaylistInfo(driver)
     name = name + ".csv"
 
-    with open(name, mode="a", newline="") as f_object:
+    with open(name, mode="a", newline="", encoding="utf-8") as f_object:
         writer_object = writer(f_object)
         writer_object.writerow(track)
         f_object.close()
@@ -66,22 +66,28 @@ def getTracks(table):
 
         track_info = []
         current_track = track.get_attribute("aria-rowindex")
-        track_data = track.find_element(
-            By.CSS_SELECTOR, 'div > div[aria-colindex="2"] > div '
-        )
-        track_name = track_data.find_element(By.CSS_SELECTOR, "a > div").get_attribute(
-            "innerHTML"
-        )
-        track_artist = track_data.find_elements(
-            By.CSS_SELECTOR, "span.standalone-ellipsis-one-line > div > a"
-        )
+
+        try:
+            track_data = track.find_element(
+                By.CSS_SELECTOR, 'div > div[aria-colindex="2"] > div '
+            )
+            track_name = track_data.find_element(
+                By.CSS_SELECTOR, "a > div"
+            ).get_attribute("innerHTML")
+            track_artist = track_data.find_elements(
+                By.CSS_SELECTOR, "span.standalone-ellipsis-one-line > div > a"
+            )
+        except:
+            track_name = "Unavalable song"
+            track_artist = []
 
         track_info.append(int(current_track) - 1)
         track_info.append(track_name)
         output_artists = ""
         for artist in track_artist:
             output_artists += artist.get_attribute("innerHTML") + ", "
-        output_artists = output_artists[:-2]
+        
+        if(len(output_artists)): output_artists = output_artists[:-2]
         track_info.append(str(output_artists))
 
         writeToCSV(track_info)
@@ -120,7 +126,9 @@ def writeTxtFile(driver, link):
     file.write("\n\nLink to playlist: ")
     file.write(link)
 
-    file.write('\n\n You can find a spreadsheet of the scraped songs at "song name".csv')
+    file.write(
+        '\n\n You can find a spreadsheet of the scraped songs at "song name".csv'
+    )
 
     file.write("\n\n\nApp designed by Stresna George")
 
